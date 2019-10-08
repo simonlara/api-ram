@@ -8,7 +8,8 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from models import db
-#from models import Person
+from family_datastructure import Family
+family= Family('Doe')
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -28,14 +29,31 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/hello', methods=['POST', 'GET'])
-def handle_person():
+@app.route('/member', methods=['POST', 'GET'])
+def handle_members():
+    if request.method=='GET':
+        all=jsonify( family.get_all_members())
+        return all,200
 
-    response_body = {
-        "hello": "world"
-    }
+    if request.method=='POST':
+        member = request.get_json()
+        family.add_member(member)
+        return member,200
 
-    return jsonify(response_body), 200
+@app.route('/member/<int:member_id>', methods=['GET','PUT','DELETE'])
+def handle_member(member_id):
+    member= family.get_member(member_id)
+    if request.method=='GET':
+       return jsonify(member), 200
+
+    if request.method=='DELETE':
+        family.delete_member(member_id)
+        return jsonify(family._members), 200
+
+    if request.method=='PUT':
+        family.update_member(member_id)
+        return jsonify(member), 200
+
 
 # this only runs if `$ python src/main.py` is exercuted
 if __name__ == '__main__':
