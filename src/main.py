@@ -37,10 +37,12 @@ def handle_members():
 
     if request.method=='POST':
         member = request.get_json()
+        if 'first_name' not in member or'age' not in member:
+               return 'faltan datos ',400
         family.add_member(member)
         return member,200
 
-@app.route('/member/<int:member_id>', methods=['GET','PUT','DELETE'])
+@app.route('/member/<int:member_id>', methods=['GET','DELETE'])
 def handle_member(member_id):
     member= family.get_member(member_id)
     if request.method=='GET':
@@ -50,9 +52,7 @@ def handle_member(member_id):
         family.delete_member(member_id)
         return jsonify(family._members), 200
 
-    if request.method=='PUT':
-        family.update_member(member_id)
-        return jsonify(member), 200
+
 
 
 # this only runs if `$ python src/main.py` is exercuted

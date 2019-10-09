@@ -50,4 +50,18 @@ class Family:
 
     # this method is done, it returns a list with all the family members
     def get_all_members(self):
-        return self._members
+        respuesta={}
+        respuesta['members']=self._members
+        respuesta['family_name']=self.last_name
+        respuesta['lucky_numbers']=[]
+        respuesta['sum_of_lucky']=''
+        suma=0
+        for x in self._members:
+
+            for num in x['lucky_numbers']:
+
+                    respuesta['lucky_numbers'].append(num)
+                    suma=suma+num
+            respuesta['sum_of_lucky']=suma
+
+        return respuesta
